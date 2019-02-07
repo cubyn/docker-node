@@ -1,11 +1,11 @@
 # For REGULAR builds
 # tags are cubyn/node:{version}
-#FROM mhart/alpine-node:base-9.11
+#FROM mhart/alpine-node:base-10.15
 
 # For DYNAMIC (native modules in app) builds and CI builds
 # tags are cubyn/node:dynamic-{version} for DYNAMIC
 # tags are cubyn/node:ci-{version} for CI
-FROM mhart/alpine-node:9.11
+FROM mhart/alpine-node:10.15
 
 RUN apk update \
   && apk add --no-cache curl bash binutils tar \
