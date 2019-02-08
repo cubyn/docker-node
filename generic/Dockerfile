@@ -5,7 +5,8 @@ FROM node:${SRC_TAG} as base
 
 RUN apk update && apk add --no-cache \
     make \
-    curl
+    curl \
+    mysql-client
 
 # For DYNAMIC (native modules in app) builds and CI builds
 # tags are cubyn/node:dynamic-{version} for DYNAMIC
@@ -17,5 +18,4 @@ FROM base as ci
 RUN apk update && apk add --no-cache \
    python \
    g++ \
-   libexecinfo-dev \
-   mysql-client
+   libexecinfo-dev
