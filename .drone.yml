@@ -22,6 +22,7 @@ pipeline:
       - "${DK_TAG_PREFIX}${NODE_MAJOR}"
       - "${DK_TAG_PREFIX}latest"
     build_args:
-      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}
+      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
     when:
+      event: [push, tag, deployment]
       branch: master
