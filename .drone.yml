@@ -1,20 +1,25 @@
 matrix:
   include:
     # Node JS 10.15.1
+    # base image
     - NODE_MAJOR: 10
       NODE_MINOR: 15
       NODE_PATCH: 1
       DK_TAG_PREFIX: ""
+      TARGET: base
+    # ci image
     - NODE_MAJOR: 10
       NODE_MINOR: 15
       NODE_PATCH: 1
       DK_TAG_PREFIX: "ci-"
+      TARGET: ci
 
 pipeline:
   build:
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     dockerfile: generic/Dockerfile
+    target: "${TARGET}"
     repo: cubyn/node
     tags:
       - "${DK_TAG_PREFIX}${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}"
