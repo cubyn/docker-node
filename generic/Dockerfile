@@ -6,6 +6,7 @@ FROM node:${SRC_TAG} as base
 RUN apk update && apk add --no-cache \
     make \
     curl \
+    bash \
     mysql-client
 
 # For DYNAMIC (native modules in app) builds and CI builds
