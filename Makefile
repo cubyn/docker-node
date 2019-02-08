@@ -4,6 +4,7 @@ ENV = /usr/bin/env
 # default shell options
 .SHELLFLAGS = -c
 
+# always use a full semver version
 NODE_VERSION=10.15.1
 
 BUILD_DIR=generic
@@ -17,7 +18,7 @@ DK_TAG=$(NODE_VERSION)
 DK_NEW_TAG=latest
 
 TAG_PREFIX=
-TAG_SUFFIX=-alpine
+TAG_SUFFIX=
 
 MAJOR=$(shell echo $(NODE_VERSION) | cut -d '.' -f1)
 MINOR=$(shell echo $(NODE_VERSION) | cut -d '.' -f2)
