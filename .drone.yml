@@ -1,0 +1,28 @@
+matrix:
+  include:
+    # Node JS 10.15.1
+    - NODE_MAJOR: 10
+      NODE_MINOR: 15
+      NODE_PATCH: 1
+      DK_TAG_PREFIX: ""
+    - NODE_MAJOR: 10
+      NODE_MINOR: 15
+      NODE_PATCH: 1
+      DK_TAG_PREFIX: "ci-"
+
+pipeline:
+  build:
+    image: plugins/docker
+    secrets: [ docker_username, docker_password ]
+    dockerfile: generic/Dockerfile
+    repo: cubyn/node
+    tags:
+      - "${DK_TAG_PREFIX}${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}"
+      - "${DK_TAG_PREFIX}${NODE_MAJOR}.${NODE_MINOR}"
+      - "${DK_TAG_PREFIX}${NODE_MAJOR}"
+      - "${DK_TAG_PREFIX}latest"
+    build_args:
+      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
+    when:
+      event: [push, tag, deployment]
+      branch: master

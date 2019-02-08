@@ -4,12 +4,32 @@ Cubyn base docker container for Node.js, with yarn
 The image is based on [mhart/alpine-node](https://github.com/mhart/alpine-node) and image size is 60MB (20 compressed)
 
 ## build
-Tag can be `7`, `7.x` or `latest`. See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) page for the list of available tags.
+Tag can be `X`, `X.Y` , `X.Y.Z` or `latest` for base image and `ci-X`, `ci-X.Y` , `ci-X.Y.Z` or `ci-latest` for CI images
 
-Un-comment or change the `FROM` statement in the Dockerfile before launching the build:
+See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) page for the list of available tags.
 
 ```sh
-docker build -t cubyn/node:{tag} .
+# building all images
+make build
+# tagging all image versions
+make tag
+# pushing all image versions
+make push
+
+# or just all commands in one shot
+make
+```
+
+To upgrade NodeJS version, edit the `Makefile` and change ***NODE_VERSION*** to the required Full SemVer tag (MAJOR.MINOR.PATCH) ([tags availables](https://hub.docker.com/_/node))
+
+```Makefile
+NODE_VERSION=10.15.1
+```
+
+then rebuild and push.
+
+```sh
+make
 ```
 
 ## sample usage
