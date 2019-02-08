@@ -16,6 +16,9 @@ DK_TAG=$(NODE_VERSION)
 
 DK_NEW_TAG=latest
 
+TAG_PREFIX=
+TAG_SUFFIX=-alpine
+
 MAJOR=$(shell echo $(NODE_VERSION) | cut -d '.' -f1)
 MINOR=$(shell echo $(NODE_VERSION) | cut -d '.' -f2)
 PATCH=$(shell echo $(NODE_VERSION) | cut -d '.' -f3)
@@ -34,26 +37,26 @@ all:
 .PHONY: all
 
 _build:
-	echo "Building $(DK_IMAGE):$(DK_TAG) (stage $(STAGE)) from parent image node:$(DK_SRC_TAG)"; \
-	docker build -t $(DK_IMAGE):$(DK_TAG) \
+	echo "Building $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) (stage $(STAGE)) from parent image node:$(DK_SRC_TAG)"; \
+	docker build -t $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) \
 		--build-arg SRC_TAG=$(DK_SRC_TAG) \
 		--target $(STAGE) \
 		$(BUILD_DIR) ;
 .PHONY: _build
 
 _tag:
-	echo "Tagging image $(DK_IMAGE):$(DK_TAG) to $(DK_IMAGE):$(DK_NEW_TAG)"
-	docker tag $(DK_IMAGE):$(DK_TAG) $(DK_IMAGE):$(DK_NEW_TAG)
+	echo "Tagging image $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) to $(DK_IMAGE):$(TAG_PREFIX)$(DK_NEW_TAG)$(TAG_SUFFIX)"
+	docker tag $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) $(DK_IMAGE):$(TAG_PREFIX)$(DK_NEW_TAG)$(TAG_SUFFIX)
 .PHONY: _tag
 
 _push:
-	echo "Pushing image $(DK_IMAGE):$(DK_TAG)"
-	docker push $(DK_IMAGE):$(DK_TAG)
+	echo "Pushing image $(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX)"
+	docker push $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX)
 .PHONY: _push
 
 build:
 	$(MAKE) _build DK_TAG=$(DK_TAG)
-	$(MAKE) _build STAGE=ci DK_TAG=ci-$(DK_TAG)
+	$(MAKE) _build DK_TAG=$(DK_TAG) STAGE=ci TAG_PREFIX="ci-"
 .PHONY: build
 
 tag:
@@ -64,13 +67,13 @@ tag:
 
 push:
 	$(MAKE) _push DK_TAG=$(NODE_VERSION)
-	$(MAKE) _push DK_TAG=ci-$(NODE_VERSION)
+	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="ci-"
 	$(MAKE) _push DK_TAG=latest
-	$(MAKE) _push DK_TAG=ci-latest
+	$(MAKE) _push DK_TAG=latest TAG_PREFIX="ci-"
 	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR)
-	$(MAKE) _push DK_TAG=ci-$(MAJOR).$(MINOR)
+	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="ci-"
 	$(MAKE) _push DK_TAG=$(MAJOR)
-	$(MAKE) _push DK_TAG=ci-$(MAJOR)
+	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="ci-"
 .PHONY: push
 
 tags-latest:
