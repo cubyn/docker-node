@@ -15,6 +15,21 @@ make build
 make tag
 # pushing all image versions
 make push
+
+# or just all commands in one shot
+make
+```
+
+To upgrade NodeJS version, edit the `Makefile` and change ***NODE_VERSION*** to the required Full SemVer tag (MAJOR.MINOR.PATCH) ([tags availables](https://hub.docker.com/_/node))
+
+```Makefile
+NODE_VERSION=10.15.1
+```
+
+then rebuild and push.
+
+```sh
+make
 ```
 
 ## sample usage
