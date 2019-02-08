@@ -48,7 +48,7 @@ _tag:
 
 _push:
 	echo "Pushing image $(DK_IMAGE):$(DK_TAG)"
-	echo docker push $(DK_IMAGE):$(DK_TAG)
+	docker push $(DK_IMAGE):$(DK_TAG)
 .PHONY: _push
 
 build:
