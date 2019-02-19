@@ -32,6 +32,7 @@ PATCH=$(shell echo $(NODE_VERSION) | cut -d '.' -f3)
 default: all
 
 all:
+	$(MAKE) check
 	$(MAKE) build
 	$(MAKE) tag
 	$(MAKE) push

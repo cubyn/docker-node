@@ -1,0 +1,26 @@
+language: python
+
+matrix:
+  include:
+  - env: NODE_VERSION="10.15.2"
+  - env: NODE_VERSION="11.10.1"
+
+services:
+  - docker
+
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+script:
+- make check
+- make build NODE_VERSION=$NODE_VERSION
+- make tag NODE_VERSION=$NODE_VERSION
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: make push NODE_VERSION=$NODE_VERSION
+  on:
+    all_branches: true
+    # tags: true
+    # branch: master
