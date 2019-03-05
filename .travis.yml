@@ -2,8 +2,8 @@ language: python
 
 matrix:
   include:
-  - env: NODE_VERSION="10.15.2"
-  - env: NODE_VERSION="11.10.1"
+  - env: NODE_VERSION="10.15.2" LATEST_VERSION="true"
+  - env: NODE_VERSION="11.10.1" LATEST_VERSION="false"
 
 services:
   - docker
