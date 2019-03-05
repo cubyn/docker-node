@@ -13,13 +13,13 @@ before_install:
 
 script:
 - make check
-- make build NODE_VERSION=$NODE_VERSION
-- make tag NODE_VERSION=$NODE_VERSION
+- make build NODE_VERSION=$NODE_VERSION LATEST_VERSION="$LATEST_VERSION"
+- make tag NODE_VERSION=$NODE_VERSION LATEST_VERSION="$LATEST_VERSION"
 
 deploy:
   skip_cleanup: true
   provider: script
-  script: make push NODE_VERSION=$NODE_VERSION
+  script: make push NODE_VERSION=$NODE_VERSION LATEST_VERSION="$LATEST_VERSION"
   on:
     all_branches: true
     # tags: true
