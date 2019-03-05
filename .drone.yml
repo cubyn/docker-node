@@ -1,15 +1,28 @@
 matrix:
   include:
-    # Node JS 10.15.1
+    # Node JS 10.15
     # base image
     - NODE_MAJOR: 10
       NODE_MINOR: 15
-      NODE_PATCH: 1
+      NODE_PATCH: 2
       DK_TAG_PREFIX: ""
       TARGET: base
     # ci image
     - NODE_MAJOR: 10
       NODE_MINOR: 15
+      NODE_PATCH: 2
+      DK_TAG_PREFIX: "ci-"
+      TARGET: ci
+    # Node JS 11.10
+    # base image
+    - NODE_MAJOR: 11
+      NODE_MINOR: 10
+      NODE_PATCH: 1
+      DK_TAG_PREFIX: ""
+      TARGET: base
+    # ci image
+    - NODE_MAJOR: 11
+      NODE_MINOR: 10
       NODE_PATCH: 1
       DK_TAG_PREFIX: "ci-"
       TARGET: ci
