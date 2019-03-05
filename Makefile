@@ -37,6 +37,18 @@ all:
 	$(MAKE) push
 .PHONY: all
 
+# install local git hooks
+githooks:
+	# git config core.hooksPath .githooks
+	find .git/hooks -type l -exec rm -v {} \;
+	find .githooks -maxdepth 1 -type f -exec ln -v -sf ../../{} .git/hooks/ \;
+	chmod a+x .git/hooks/*
+.PHONY: githooks
+
+check:
+	docker run --rm  -w /src -v "$$PWD:/src" hadolint/hadolint hadolint $(BUILD_DIR)/Dockerfile
+.PHONY: check
+
 _build:
 	echo "Building $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) (stage $(STAGE)) from parent image node:$(DK_SRC_TAG)"; \
 	docker build -t $(DK_IMAGE):$(TAG_PREFIX)$(DK_TAG)$(TAG_SUFFIX) \

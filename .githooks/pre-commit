@@ -1,0 +1,28 @@
+#!/bin/sh
+rc=0
+for file in $(git diff --staged --name-only --diff-filter=ACMR); do
+    filename=$(basename $file)
+    # fileext=${file##*.}
+    #
+    # case $fileext in
+    #     *) ;;
+    # esac
+
+    case $filename in
+        Dockerfile)
+            echo hadolint $file
+            hadolint $file
+            if [ $? -ne 0 ]; then
+                echo "$file not correct."
+                rc=1
+            fi
+            ;;
+        *) ;;
+    esac
+done
+
+if [ $rc -ne 0 ]; then
+    echo "Some errors prevents committing."
+fi
+
+exit $rc

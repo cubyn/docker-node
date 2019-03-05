@@ -1,0 +1,5 @@
+allowedRegistries:
+  - docker.io
+
+ignored:
+  - DL3018
