@@ -46,7 +46,7 @@ githooks:
 .PHONY: githooks
 
 check:
-	docker run --rm  -w /src -v "$$PWD:/src" hadolint/hadolint hadolint $(BUILD_DIR)/Dockerfile
+	docker run --rm  -w /src -v "$$PWD:/src" hadolint/hadolint:latest hadolint $(BUILD_DIR)/Dockerfile
 .PHONY: check
 
 _build:

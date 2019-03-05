@@ -15,6 +15,11 @@ matrix:
       TARGET: ci
 
 pipeline:
+  test:
+    image: hadolint/hadolint:latest-debian
+    commands:
+      - hadolint generic/Dockerfile
+
   build:
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
