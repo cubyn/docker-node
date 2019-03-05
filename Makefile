@@ -6,7 +6,7 @@ ENV = /usr/bin/env
 
 # always use a full semver version
 NODE_VERSION=10.15.2
-
+LATEST_VERSION=false
 BUILD_DIR=generic
 STAGE = base
 
@@ -79,19 +79,23 @@ tag:
 .PHONY: tag
 
 push:
-	$(MAKE) _push DK_TAG=$(NODE_VERSION)
-	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="ci-"
-	$(MAKE) _push DK_TAG=latest
-	$(MAKE) _push DK_TAG=latest TAG_PREFIX="ci-"
-	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR)
-	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="ci-"
-	$(MAKE) _push DK_TAG=$(MAJOR)
-	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="ci-"
+	$(MAKE) _push DK_TAG=$(NODE_VERSION) ;\
+	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="ci-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) ;\
+	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="ci-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR) ;\
+	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="ci-" ;\
+	if [ "$(LATEST_VERSION)" == "true" ]; then  \
+		$(MAKE) _push DK_TAG=latest ;\
+		$(MAKE) _push DK_TAG=latest TAG_PREFIX="ci-" ;\
+	fi
 .PHONY: push
 
 tags-latest:
-	$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=latest
-	$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-latest
+	if [ "$(LATEST_VERSION)" == "true" ]; then  \
+		$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=latest ;\
+		$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-latest ;\
+	fi
 .PHONY: tags-latest
 
 tags-minor:
