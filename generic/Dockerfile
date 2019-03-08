@@ -9,9 +9,6 @@ RUN apk update && apk add --no-cache \
     bash \
     mysql-client
 
-# For DYNAMIC (native modules in app) builds and CI builds
-# tags are cubyn/node:dynamic-{version} for DYNAMIC
-
 # For CI Builds ONLY
 # tags are cubyn/node:ci-{version}
 FROM base as ci
