@@ -1,5 +1,6 @@
+---
 kind: pipeline
-name: default
+name: node-10.15.2
 
 steps:
   - name: test
@@ -21,27 +22,6 @@ steps:
         - "10.15.2"
         - "10.15"
         - "10"
-      build_args:
-        - SRC_TAG=10.15.2-alpine
-    when:
-      event:
-        - push
-        - pull_request
-        - tag
-      branch:
-        - master
-
-  - name: build_latest
-    image: plugins/docker
-    settings:
-      docker_username:
-        from_secret: docker_username
-      docker_password:
-        from_secret: docker_password
-      dockerfile: generic/Dockerfile
-      target: "base"
-      repo: cubyn/node
-      tags:
         - "latest"
       build_args:
         - SRC_TAG=10.15.2-alpine
@@ -52,6 +32,7 @@ steps:
         - tag
       branch:
         - master
+        - fix/drone_1.0
 
   - name: build_ci
     image: plugins/docker
@@ -67,27 +48,6 @@ steps:
         - "ci-10.15.2"
         - "ci-10.15"
         - "ci-10"
-      build_args:
-        - SRC_TAG=10.15.2-alpine
-    when:
-      event:
-        - push
-        - pull_request
-        - tag
-      branch:
-        - master
-
-  - name: build_ci_latest
-    image: plugins/docker
-    settings:
-      docker_username:
-        from_secret: docker_username
-      docker_password:
-        from_secret: docker_password
-      dockerfile: generic/Dockerfile
-      target: "ci"
-      repo: cubyn/node
-      tags:
         - "ci-latest"
       build_args:
         - SRC_TAG=10.15.2-alpine
@@ -98,3 +58,4 @@ steps:
         - tag
       branch:
         - master
+        - fix/drone_1.0
