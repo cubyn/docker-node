@@ -1,82 +1,100 @@
-matrix:
-  include:
-    # Node JS 10.15
-    - NODE_MAJOR: 10
-      NODE_MINOR: 15
-      NODE_PATCH: 2
-      LATEST: "true"
-    # Node JS 11.10
-    - NODE_MAJOR: 11
-      NODE_MINOR: 10
-      NODE_PATCH: 1
-      LATEST: "false"
+kind: pipeline
+name: default
 
-pipeline:
-  test:
+steps:
+  - name: test
     image: hadolint/hadolint:latest-debian
     commands:
       - hadolint generic/Dockerfile
 
-  build:
+  - name: build
     image: plugins/docker
-    secrets: [ docker_username, docker_password ]
-    dockerfile: generic/Dockerfile
-    target: "base"
-    repo: cubyn/node
-    tags:
-      - "${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}"
-      - "${NODE_MAJOR}.${NODE_MINOR}"
-      - "${NODE_MAJOR}"
-    build_args:
-      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
+    settings:
+      docker_username:
+        from_secret: docker_username
+      docker_password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "base"
+      repo: cubyn/node
+      tags:
+        - "10.15.2"
+        - "10.15"
+        - "10"
+      build_args:
+        - SRC_TAG=10.15.2-alpine
     when:
-      event: [push, tag, deployment]
-      branch: master
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
 
-  build_latest:
+  - name: build_latest
     image: plugins/docker
-    secrets: [ docker_username, docker_password ]
-    dockerfile: generic/Dockerfile
-    target: "base"
-    repo: cubyn/node
-    tags:
-      - "latest"
-    build_args:
-      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
+    settings:
+      docker_username:
+        from_secret: docker_username
+      docker_password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "base"
+      repo: cubyn/node
+      tags:
+        - "latest"
+      build_args:
+        - SRC_TAG=10.15.2-alpine
     when:
-      event: [push, tag, deployment]
-      branch: master
-      matrix:
-        LATEST: "true"
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
 
-  build_ci:
+  - name: build_ci
     image: plugins/docker
-    secrets: [ docker_username, docker_password ]
-    dockerfile: generic/Dockerfile
-    target: "ci"
-    repo: cubyn/node
-    tags:
-      - "ci-${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}"
-      - "ci-${NODE_MAJOR}.${NODE_MINOR}"
-      - "ci-${NODE_MAJOR}"
-    build_args:
-      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
+    settings:
+      docker_username:
+        from_secret: docker_username
+      docker_password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "ci"
+      repo: cubyn/node
+      tags:
+        - "ci-10.15.2"
+        - "ci-10.15"
+        - "ci-10"
+      build_args:
+        - SRC_TAG=10.15.2-alpine
     when:
-      event: [push, tag, deployment]
-      branch: master
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
 
-  build_ci_latest:
+  - name: build_ci_latest
     image: plugins/docker
-    secrets: [ docker_username, docker_password ]
-    dockerfile: generic/Dockerfile
-    target: "ci"
-    repo: cubyn/node
-    tags:
-      - "ci-latest"
-    build_args:
-      - SRC_TAG=${NODE_MAJOR}.${NODE_MINOR}.${NODE_PATCH}-alpine
+    settings:
+      docker_username:
+        from_secret: docker_username
+      docker_password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "ci"
+      repo: cubyn/node
+      tags:
+        - "ci-latest"
+      build_args:
+        - SRC_TAG=10.15.2-alpine
     when:
-      event: [push, tag, deployment]
-      branch: master
-      matrix:
-        LATEST: "true"
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
