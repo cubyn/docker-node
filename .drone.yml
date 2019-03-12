@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: node-10.15.2
+name: node-10.15.3
 
 steps:
   - name: test
@@ -19,12 +19,12 @@ steps:
       target: "base"
       repo: cubyn/node
       tags:
-        - "10.15.2"
+        - "10.15.3"
         - "10.15"
         - "10"
         - "latest"
       build_args:
-        - SRC_TAG=10.15.2-alpine
+        - SRC_TAG=10.15.3-alpine
     when:
       event:
         - push
@@ -45,12 +45,74 @@ steps:
       target: "ci"
       repo: cubyn/node
       tags:
-        - "ci-10.15.2"
+        - "ci-10.15.3"
         - "ci-10.15"
         - "ci-10"
         - "ci-latest"
       build_args:
-        - SRC_TAG=10.15.2-alpine
+        - SRC_TAG=10.15.3-alpine
+    when:
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
+        - fix/drone_1.0
+
+---
+kind: pipeline
+name: node-11.11.0
+
+steps:
+  - name: test
+    image: hadolint/hadolint:latest-debian
+    commands:
+      - hadolint generic/Dockerfile
+
+  - name: build
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "base"
+      repo: cubyn/node
+      tags:
+        - "11.11.0"
+        - "11.11"
+        - "11"
+        - "latest"
+      build_args:
+        - SRC_TAG=11.11.0-alpine
+    when:
+      event:
+        - push
+        - pull_request
+        - tag
+      branch:
+        - master
+        - fix/drone_1.0
+
+  - name: build_ci
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: generic/Dockerfile
+      target: "ci"
+      repo: cubyn/node
+      tags:
+        - "ci-11.11.0"
+        - "ci-11.11"
+        - "ci-11"
+        - "ci-latest"
+      build_args:
+        - SRC_TAG=11.11.0-alpine
     when:
       event:
         - push
