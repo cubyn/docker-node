@@ -28,7 +28,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
         - tag
       branch:
         - master
@@ -53,7 +52,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
         - tag
       branch:
         - master
@@ -87,7 +85,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
         - tag
       branch:
         - master
@@ -111,7 +108,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
         - tag
       branch:
         - master
