@@ -1,4 +1,8 @@
-# docker-node
+docker-node
+===========
+
+[![CircleCI](https://circleci.com/gh/cubyn/docker-node/tree/master.svg?style=svg)](https://circleci.com/gh/cubyn/docker-node/tree/master)
+
 Cubyn base docker container for Node.js, with yarn
 
 The image is based on [mhart/alpine-node](https://github.com/mhart/alpine-node) and image size is 60MB (20 compressed)
