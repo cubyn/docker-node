@@ -70,6 +70,8 @@ _push:
 build:
 	$(MAKE) _build DK_TAG=$(DK_TAG)
 	$(MAKE) _build DK_TAG=$(DK_TAG) STAGE=ci TAG_PREFIX="ci-"
+	$(MAKE) _build DK_TAG=$(DK_TAG) STAGE=wkhtmltopdf TAG_PREFIX="wkhtml-"
+	$(MAKE) _build DK_TAG=$(DK_TAG) STAGE=wkhtmltopdf_ci TAG_PREFIX="wkhtml-ci-"
 .PHONY: build
 
 tag:
@@ -81,13 +83,21 @@ tag:
 push:
 	$(MAKE) _push DK_TAG=$(NODE_VERSION) ;\
 	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="ci-" ;\
+	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="wkhtml-" ;\
+	$(MAKE) _push DK_TAG=$(NODE_VERSION) TAG_PREFIX="wkhtml-ci-" ;\
 	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) ;\
 	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="ci-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="wkhtml-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR).$(MINOR) TAG_PREFIX="wkhtml-ci-" ;\
 	$(MAKE) _push DK_TAG=$(MAJOR) ;\
 	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="ci-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="wkhtml-" ;\
+	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="wkhtml-ci-" ;\
 	if [ "$(LATEST_VERSION)" == "true" ]; then  \
 		$(MAKE) _push DK_TAG=latest ;\
 		$(MAKE) _push DK_TAG=latest TAG_PREFIX="ci-" ;\
+		$(MAKE) _push DK_TAG=latest TAG_PREFIX="wkhtml-" ;\
+		$(MAKE) _push DK_TAG=latest TAG_PREFIX="wkhtml-ci-" ;\
 	fi
 .PHONY: push
 
@@ -95,15 +105,21 @@ tags-latest:
 	if [ "$(LATEST_VERSION)" == "true" ]; then  \
 		$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=latest ;\
 		$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-latest ;\
+		$(MAKE) _tag DK_TAG=wkhtml-$(NODE_VERSION) DK_NEW_TAG=wkhtml-latest ;\
+		$(MAKE) _tag DK_TAG=wkhtml-ci-$(NODE_VERSION) DK_NEW_TAG=wkhtml-ci-latest ;\
 	fi
 .PHONY: tags-latest
 
 tags-minor:
 	$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=$(MAJOR).$(MINOR)
 	$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-$(MAJOR).$(MINOR)
+	$(MAKE) _tag DK_TAG=wkhtml-$(NODE_VERSION) DK_NEW_TAG=wkhtml-$(MAJOR).$(MINOR)
+	$(MAKE) _tag DK_TAG=wkhtml-ci-$(NODE_VERSION) DK_NEW_TAG=wkhtml-ci-$(MAJOR).$(MINOR)
 .PHONY: tags-minor
 
 tags-major:
 	$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=$(MAJOR)
 	$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-$(MAJOR)
+	$(MAKE) _tag DK_TAG=wkhtml-$(NODE_VERSION) DK_NEW_TAG=wkhtml-$(MAJOR)
+	$(MAKE) _tag DK_TAG=wkhtml-ci-$(NODE_VERSION) DK_NEW_TAG=wkhtml-ci-$(MAJOR)
 .PHONY: tags-major
