@@ -30,11 +30,9 @@ RUN apk --update --no-cache add \
     ttf-ubuntu-font-family \
     fontconfig \
     && apk add --no-cache --virtual .build-deps \
-      msttcorefonts-installer \
-    # Install microsoft fonts
+    msttcorefonts-installer \
     && update-ms-fonts \
     && fc-cache -f \
-    # Clean up when done
     && rm -rf /tmp/* \
     && apk del .build-deps
 
@@ -48,16 +46,15 @@ COPY --from=wkhtmltopdf_src /bin/wkhtmltopdf /bin/wkhtmltopdf
 # For CI Builds ONLY
 # tags are cubyn/node:ci-{version}
 FROM base as ci
-
-RUN apk update && apk add --no-cache \
-   python \
-   g++ \
-   libexecinfo-dev
-
+RUN apk add --no-cache -u musl-dev musl-utils musl && \
+    apk add --no-cache \
+    python \
+    libexecinfo-dev \
+    g++
 
 FROM wkhtmltopdf as wkhtmltopdf_ci
-
-RUN apk update && apk add --no-cache \
-  python \
-  g++ \
-  libexecinfo-dev
+RUN apk add --no-cache -u musl-dev musl-utils musl && \
+    apk add --no-cache \
+    python \
+    libexecinfo-dev \
+    g++
