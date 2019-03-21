@@ -49,6 +49,8 @@ FROM base as ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
     python \
+    git \
+    openssh-client \
     libexecinfo-dev \
     g++
 
@@ -56,5 +58,7 @@ FROM wkhtmltopdf as wkhtmltopdf_ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
     python \
+    git \
+    openssh-client \
     libexecinfo-dev \
     g++
