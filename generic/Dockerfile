@@ -4,11 +4,34 @@ ARG SRC_TAG=10.15-alpine
 ARG WKHTMLTOPDF_TAG=0.12.5
 FROM node:${SRC_TAG} as base
 
-RUN apk update && apk add --no-cache \
+RUN apk --update --no-cache add \
     make \
     curl \
     bash \
-    mysql-client
+    mysql-client \
+    openssl \
+    ca-certificates \
+    wget \
+    && update-ca-certificates
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+ENV GOSU_VERSION 1.11
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN set -eux; \
+	apk add --no-cache --virtual .gosu-deps \
+		dpkg \
+	; \
+	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+# clean up fetch dependencies
+	apk del --no-network .gosu-deps; \
+	chmod +x /usr/local/bin/gosu; \
+# verify that the binary works
+	gosu --version
 
 # wkhtmltopdf image version
 FROM cubyn/wkhtmltopdf:${WKHTMLTOPDF_TAG} as wkhtmltopdf_src
