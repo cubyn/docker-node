@@ -14,6 +14,10 @@ RUN apk --update --no-cache add \
     wget \
     && update-ca-certificates
 
+ENV SHMIG_VERSION master
+RUN wget -O /usr/local/bin/shmig https://raw.githubusercontent.com/mbucc/shmig/$SHMIG_VERSION/shmig && \
+    chmod +x /usr/local/bin/shmig
+
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
