@@ -217,7 +217,7 @@ jobs:
       NODE_VERSION: "11.15.0"
       LATEST_VERSION: "false"
 
-  build_11:
+  build_12:
     docker:
       - image: circleci/buildpack-deps:bionic-scm
     steps:
@@ -315,7 +315,7 @@ workflows:
   "node-12":
     jobs:
       - test
-      - build_11:
+      - build_12:
           context: cubyn_hub_docker
           requires:
             - test
