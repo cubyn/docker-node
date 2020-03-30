@@ -7,6 +7,8 @@ Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
 ## Usage
 
+Docker CLI must be logged to Cubyn Docker account.
+
 ```sh
 # Building all images
 make build
@@ -29,13 +31,11 @@ Update ***NODE_VERSION*** in `Makefile` to the required SemVer tag.
 NODE_VERSION=13.12.0
 ```
 
-Rebuild:
+Rebuild and push to Docker Hub:
 
 ```sh
 make
 ```
-
-Then push (the CI will push to Docker Hub).
 
 Availables Node.js tags:
 
