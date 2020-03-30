@@ -1,48 +1,68 @@
-docker-node
-===========
+# docker-node
 
 [![CircleCI](https://circleci.com/gh/cubyn/docker-node/tree/master.svg?style=svg)](https://circleci.com/gh/cubyn/docker-node/tree/master)
 
-Cubyn base docker container for Node.js, with yarn
+Cubyn Docker container for Node.js and Yarn.
+Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
-The image is based on [mhart/alpine-node](https://github.com/mhart/alpine-node) and image size is 60MB (20 compressed)
-
-## build
-Tag can be `X`, `X.Y` , `X.Y.Z` or `latest` for base image and `ci-X`, `ci-X.Y` , `ci-X.Y.Z` or `ci-latest` for CI images
-
-See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) page for the list of available tags.
+## Usage
 
 ```sh
-# building all images
+# Building all images
 make build
-# tagging all image versions
+# Tagging all image versions
 make tag
-# pushing all image versions
+# Pushing all image versions
 make push
 
-# or just all commands in one shot
+# Or all commands in one
 make
 ```
 
-To upgrade NodeJS version, edit the `Makefile` and change ***NODE_VERSION*** to the required Full SemVer tag (MAJOR.MINOR.PATCH) ([tags availables](https://hub.docker.com/_/node))
+## Build on a new Node.js version
+
+Update ***NODE_VERSION*** in `Makefile` to the required SemVer tag.
+[Availables tags](https://hub.docker.com/_/node):
 
 ```Makefile
-NODE_VERSION=10.15.1
+# Makefile
+NODE_VERSION=13.12.0
 ```
 
-then rebuild and push.
+Rebuild:
 
 ```sh
 make
 ```
 
-## sample usage
+Then push (the CI will push to Docker Hub).
+
+Availables Node.js tags:
+
+Base image:
+
+* `MAJOR`
+* `MAJOR.MINOR`
+* `MAJOR.MINOR.PATCH`
+* `latest`
+
+CI image:
+
+* `ci-MAJOR`
+* `ci-MAJOR.MINOR`
+* `ci-MAJOR.MINOR.PATCH`
+* `ci-latest`
+
+See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) for the complete list of available tags.
+
+## Sample usage
 
 ```dockerfile
-## if using compiled native modules (like iconv, bcrypt, etc.)
-#FROM cubyn/node:dynamic-7
-## else
-FROM cubyn/node:7
+## If using compiled native modules (like iconv, bcrypt, etc.):
+#FROM cubyn/node:dynamic-13.12.0
+##
+## else:
+FROM cubyn/node:13.12.0
 
 WORKDIR /app
 ENV PWD /app
