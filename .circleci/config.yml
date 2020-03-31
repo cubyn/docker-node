@@ -377,7 +377,7 @@ workflows:
   "node-13":
     jobs:
       - test
-      - build_12:
+      - build_13:
           context: cubyn_hub_docker
           requires:
             - test
