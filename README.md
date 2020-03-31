@@ -37,6 +37,85 @@ Rebuild and push to Docker Hub:
 make
 ```
 
+If the new Node.js version is a major one, add configuration in `.circleci/config.yml`:
+
+```yml
+version: 2
+jobs:
+  test:
+
+  # ...
+
+  build_13:
+    docker:
+      - image: circleci/buildpack-deps:bionic-scm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build and push docker images
+          command: |
+            MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
+            MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
+            docker login -u $DOCKER_BUILD_USER -p $DOCKER_BUILD_PASS
+            docker build -t ${DK_IMAGE}:${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target base generic
+            docker build -t ${DK_IMAGE}:ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target ci generic
+            docker build -t ${DK_IMAGE}:wkhtml-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf generic
+            docker build -t ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf_ci generic
+            docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:${MAJOR}.${MINOR}
+            docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:${MAJOR}
+            docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-${MAJOR}.${MINOR}
+            docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-${MAJOR}
+            docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-${MAJOR}.${MINOR}
+            docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-${MAJOR}
+            docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-${MAJOR}.${MINOR}
+            docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-${MAJOR}
+            docker push ${DK_IMAGE}:${NODE_VERSION}
+            docker push ${DK_IMAGE}:${MAJOR}.${MINOR}
+            docker push ${DK_IMAGE}:${MAJOR}
+            docker push ${DK_IMAGE}:ci-${NODE_VERSION}
+            docker push ${DK_IMAGE}:ci-${MAJOR}.${MINOR}
+            docker push ${DK_IMAGE}:ci-${MAJOR}
+            docker push ${DK_IMAGE}:wkhtml-${NODE_VERSION}
+            docker push ${DK_IMAGE}:wkhtml-${MAJOR}.${MINOR}
+            docker push ${DK_IMAGE}:wkhtml-${MAJOR}
+            docker push ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION}
+            docker push ${DK_IMAGE}:wkhtml-ci-${MAJOR}.${MINOR}
+            docker push ${DK_IMAGE}:wkhtml-ci-${MAJOR}
+            if [ "$LATEST_VERSION" == "true" ]; then
+              docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:latest
+              docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-latest
+              docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-latest
+              docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-latest
+              docker push ${DK_IMAGE}:latest
+              docker push ${DK_IMAGE}:ci-latest
+              docker push ${DK_IMAGE}:wkhtml-latest
+              docker push ${DK_IMAGE}:wkhtml-ci-latest
+            fi
+            docker images
+    environment:
+      DK_IMAGE: "cubyn/node"
+      NODE_VERSION: "13.12.0"
+      LATEST_VERSION: "false"
+
+workflows:
+  version: 2
+
+  # ...
+
+  "node-[THE-MAJOR-NUMBER]":
+    jobs:
+      - test
+      - build_[THE-MAJOR-NUMBER]:
+          context: cubyn_hub_docker
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+```
+
+
 Availables Node.js tags:
 
 Base image:
