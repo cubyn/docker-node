@@ -7,34 +7,34 @@ Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
 ## Usage
 
-Docker CLI must be logged to Cubyn Docker account.
+### Manual
+
+To push images, Docker CLI must be logged to Cubyn Docker account
 
 ```sh
-# Building all images
+# Building all images in local
 make build
-# Tagging all image versions
+# Tagging all image versions in local
 make tag
-# Pushing all image versions
+# Pushing all image versions to Docker Hub
 make push
 
 # Or all commands in one
 make
 ```
 
+### Automatic
+
+When a new configuration is push into `master` branch, the CI push the images to Docker Hub.
+
 ## Build on a new Node.js version
 
-Update ***NODE_VERSION*** in `Makefile` to the required SemVer tag.
+Update `NODE_VERSION` in `Makefile` to the required SemVer tag
 [Availables tags](https://hub.docker.com/_/node):
 
 ```Makefile
 # Makefile
 NODE_VERSION=13.12.0
-```
-
-Rebuild and push to Docker Hub:
-
-```sh
-make
 ```
 
 If the new Node.js version is a major one, add configuration in `.circleci/config.yml`:
@@ -115,22 +115,7 @@ workflows:
               only: master
 ```
 
-
-Availables Node.js tags:
-
-Base image:
-
-* `MAJOR`
-* `MAJOR.MINOR`
-* `MAJOR.MINOR.PATCH`
-* `latest`
-
-CI image:
-
-* `ci-MAJOR`
-* `ci-MAJOR.MINOR`
-* `ci-MAJOR.MINOR.PATCH`
-* `ci-latest`
+### Specifics images
 
 See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) for the complete list of available tags.
 
