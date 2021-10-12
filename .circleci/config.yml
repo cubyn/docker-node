@@ -58,7 +58,7 @@ jobs:
             docker images
     environment:
       DK_IMAGE: "cubyn/node"
-      NODE_VERSION: "8.16.0"
+      NODE_VERSION: "8.17.0"
       LATEST_VERSION: "false"
 
   build_9:
@@ -384,7 +384,9 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only: 
+               - master
+               - feature/upgrade_v8
   "node-9":
     jobs:
       - test
