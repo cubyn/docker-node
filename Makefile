@@ -5,7 +5,7 @@ ENV = /usr/bin/env
 .SHELLFLAGS = -c
 
 # always use a full semver version
-NODE_VERSION=9.11.2
+NODE_VERSION=10.16.0
 LATEST_VERSION=false
 BUILD_DIR=generic
 STAGE = base
