@@ -1,5 +1,14 @@
 version: 2
 jobs:
+  test_legacy:
+    docker:
+      - image: hadolint/hadolint:latest-debian
+    steps:
+      - checkout
+      - run:
+          name: Lint Dockerfile
+          command: hadolint generic/DockerfileLegacy
+
   test:
     docker:
       - image: hadolint/hadolint:latest-debian
@@ -375,13 +384,12 @@ jobs:
 
   build_16:
     docker:
-      # https://hub.docker.com/r/cimg/base
       - image: cimg/base:2022.03
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: build and push docker images
+          name: Build and push Docker images
           command: |
             MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
             MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
@@ -430,72 +438,72 @@ workflows:
   version: 2
   "node-8":
     jobs:
-      - test
+      - test_legacy
       - build_8:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
   "node-9":
     jobs:
-      - test
+      - test_legacy
       - build_9:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
 
   "node-10":
     jobs:
-      - test
+      - test_legacy
       - build_10:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
   "node-11":
     jobs:
-      - test
+      - test_legacy
       - build_11:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
   "node-12":
     jobs:
-      - test
+      - test_legacy
       - build_12:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
   "node-13":
     jobs:
-      - test
+      - test_legacy
       - build_13:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
   "node-14":
     jobs:
-      - test
+      - test_legacy
       - build_14:
           context: cubyn_hub_docker
           requires:
-            - test
+            - test_legacy
           filters:
             branches:
               only: master
@@ -508,4 +516,4 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only: node-16
