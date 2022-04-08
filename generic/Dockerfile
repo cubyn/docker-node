@@ -1,6 +1,6 @@
 # For REGULAR builds
 # tags are cubyn/node:{version}
-ARG SRC_TAG=10.15-alpine
+ARG SRC_TAG=lts-alpine3.15
 ARG WKHTMLTOPDF_TAG=0.12.5
 FROM node:${SRC_TAG} as base
 
@@ -75,7 +75,7 @@ COPY --from=wkhtmltopdf_src /bin/wkhtmltopdf /bin/wkhtmltopdf
 FROM base as ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
-    python \
+    python3 \
     git \
     openssh-client \
     libexecinfo-dev \
@@ -84,7 +84,7 @@ RUN apk add --no-cache -u musl-dev musl-utils musl && \
 FROM wkhtmltopdf as wkhtmltopdf_ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
-    python \
+    python3 \
     git \
     openssh-client \
     libexecinfo-dev \
