@@ -144,4 +144,4 @@ workflows:
             - build-wkhtmltopdf-ci
           filters:
             branches:
-              only: /^node-\d*$/
+              only: /^(node-\d*|master)$/
