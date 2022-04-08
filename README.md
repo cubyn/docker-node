@@ -46,7 +46,7 @@ jobs:
 
   # ...
 
-  build_13:
+  build_[THE-MAJOR-NUMBER]:
     docker:
       - image: circleci/buildpack-deps:bionic-scm
     steps:
@@ -95,7 +95,7 @@ jobs:
             docker images
     environment:
       DK_IMAGE: "cubyn/node"
-      NODE_VERSION: "13.12.0"
+      NODE_VERSION: "[THE-MAJOR-NUMBER]"
       LATEST_VERSION: "false"
 
 workflows:
