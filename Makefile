@@ -5,10 +5,10 @@ ENV = /usr/bin/env
 .SHELLFLAGS = -c
 
 # always use a full semver version
-NODE_VERSION=16.14.2
+NODE_VERSION=16.12.0
 LATEST_VERSION=false
 BUILD_DIR=generic
-STAGE = base
+STAGE=base
 
 DK_IMAGE=cubyn/node
 
@@ -46,7 +46,7 @@ githooks:
 .PHONY: githooks
 
 check:
-	docker run --rm  -w /src -v "$$PWD:/src" hadolint/hadolint:latest hadolint $(BUILD_DIR)/Dockerfile
+	docker run --rm -w /src -v "$$PWD:/src" hadolint/hadolint:latest hadolint $(BUILD_DIR)/Dockerfile
 .PHONY: check
 
 _build:
@@ -93,7 +93,7 @@ push:
 	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="ci-" ;\
 	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="wkhtml-" ;\
 	$(MAKE) _push DK_TAG=$(MAJOR) TAG_PREFIX="wkhtml-ci-" ;\
-	if [ "$(LATEST_VERSION)" == "true" ]; then  \
+	if [ "$(LATEST_VERSION)" == "true" ]; then \
 		$(MAKE) _push DK_TAG=latest ;\
 		$(MAKE) _push DK_TAG=latest TAG_PREFIX="ci-" ;\
 		$(MAKE) _push DK_TAG=latest TAG_PREFIX="wkhtml-" ;\
@@ -102,7 +102,7 @@ push:
 .PHONY: push
 
 tags-latest:
-	if [ "$(LATEST_VERSION)" == "true" ]; then  \
+	if [ "$(LATEST_VERSION)" == "true" ]; then \
 		$(MAKE) _tag DK_TAG=$(NODE_VERSION) DK_NEW_TAG=latest ;\
 		$(MAKE) _tag DK_TAG=ci-$(NODE_VERSION) DK_NEW_TAG=ci-latest ;\
 		$(MAKE) _tag DK_TAG=wkhtml-$(NODE_VERSION) DK_NEW_TAG=wkhtml-latest ;\

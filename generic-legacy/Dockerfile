@@ -75,7 +75,7 @@ COPY --from=wkhtmltopdf_src /bin/wkhtmltopdf /bin/wkhtmltopdf
 FROM base as ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
-    python3 \
+    python \
     git \
     openssh-client \
     libexecinfo-dev \
@@ -84,7 +84,7 @@ RUN apk add --no-cache -u musl-dev musl-utils musl && \
 FROM wkhtmltopdf as wkhtmltopdf_ci
 RUN apk add --no-cache -u musl-dev musl-utils musl && \
     apk add --no-cache \
-    python3 \
+    python \
     git \
     openssh-client \
     libexecinfo-dev \

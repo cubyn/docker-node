@@ -7,7 +7,7 @@
 Build Docker images for Node.js and Yarn.
 
 Each build will be done for:
-- the exact `NODE_VERSION`
+- the exact Node.js SemVer
 - the major and minor only
 - the major only
 
@@ -19,13 +19,33 @@ Images that will be created:
 
 ## Deprecated tools for Node.js < 16
 
-Before Node.js 16, images use `generic/DockerfileLegacy`:
+Before Node.js 16:
+- `BUILD_DIR=generic-legacy` in the Makefile
 - Build image is based on `node:10.15-alpine`
 - `circleci/buildpack-deps:bionic-scm`
 
-For Node.js 16 and newer, images use `generic/Dockerfile`:
+For Node.js 16 and newer:
+- `BUILD_DIR=generic` in the Makefile
 - Build image is based on `node:lts-alpine3.15`
 - `cimg/base:2022.03` (https://hub.docker.com/r/cimg/base)
+
+## Node.js version and build issue
+
+Error on installing QT5 tools for wkhtml:
+
+| Version | Success |
+| :-----: | :-----: |
+| 14.18.0 | ✔️       |
+| 14.18.1 | ❌      |
+| 14.18.2 | ❌      |
+| 14.18.3 | ❌      |
+| 16.0.0  | ✔️       |
+| 16.11.0 | ✔️       |
+| 16.12.0 | ✔️       |
+| 16.13.0 | ❌      |
+| 16.14.0 | ❌      |
+| 16.14.1 | ❌      |
+| 16.14.2 | ❌      |
 
 ## Usage
 
@@ -59,6 +79,7 @@ Example for Node.js `16.14.2`
 ```Makefile
 # Makefile
 NODE_VERSION=16.14.2
+BUILD_DIR=generic
 ```
 
 - If the Node.js version is a major one, add configuration in `.circleci/config.yml`:

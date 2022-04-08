@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Lint Dockerfile
-          command: hadolint generic/DockerfileLegacy
+          command: hadolint generic-legacy/Dockerfile
 
   test:
     docker:
