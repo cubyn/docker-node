@@ -9,7 +9,71 @@ jobs:
           name: Lint Dockerfile
           command: hadolint generic/Dockerfile
 
-  build:
+  build-base:
+    docker:
+      - image: circleci/buildpack-deps:bionic-scm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build base image
+          command: |
+            MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
+            MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
+            docker build -t ${DK_IMAGE}:${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target base generic
+    environment:
+      DK_IMAGE: "cubyn/node"
+      NODE_VERSION: "14.18.0"
+
+  build-ci:
+    docker:
+      - image: circleci/buildpack-deps:bionic-scm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build ci image
+          command: |
+            MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
+            MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
+            docker build -t ${DK_IMAGE}:ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target ci generic
+    environment:
+      DK_IMAGE: "cubyn/node"
+      NODE_VERSION: "14.18.0"
+
+  build-wkhtmltopdf:
+    docker:
+      - image: circleci/buildpack-deps:bionic-scm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build ci image
+          command: |
+            MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
+            MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
+            docker build -t ${DK_IMAGE}:wkhtml-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf generic
+    environment:
+      DK_IMAGE: "cubyn/node"
+      NODE_VERSION: "14.18.0"
+
+  build-wkhtmltopdf-ci:
+    docker:
+      - image: circleci/buildpack-deps:bionic-scm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build ci image
+          command: |
+            MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
+            MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
+            docker build -t ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf_ci generic
+    environment:
+      DK_IMAGE: "cubyn/node"
+      NODE_VERSION: "14.18.0"
+
+  push:
     docker:
       - image: circleci/buildpack-deps:bionic-scm
     steps:
@@ -66,10 +130,18 @@ workflows:
   default:
     jobs:
       - test
-      - build:
+      - build-base
+      - build-ci
+      - build-wkhtmltopdf
+      - build-wkhtmltopdf-ci
+      - push:
           context: cubyn_hub_docker
           requires:
             - test
+            - build-base
+            - build-ci
+            - build-wkhtmltopdf
+            - build-wkhtmltopdf-ci
           filters:
             branches:
               only: /^node-\d*$/
