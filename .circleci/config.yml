@@ -370,7 +370,7 @@ jobs:
             docker images
     environment:
       DK_IMAGE: "cubyn/node"
-      NODE_VERSION: "14.0.0"
+      NODE_VERSION: "14.19.1"
       LATEST_VERSION: "false"
 
   build_16:
