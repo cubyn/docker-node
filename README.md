@@ -9,7 +9,14 @@ Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
 ### Automatic (preferred)
 
-When a new configuration is push into `master` branch, the CI push the images to Docker Hub.
+When a new configuration is push into a branch with pattern `node-xx`, the CI pushes the images to
+Docker Hub.
+
+The convention is that `node-14` is configured to publish the latest version of Node 14.x, `node-16`
+is configured to publish the latest version of Node 16.x, etc.
+
+Some more changes may be pushed to each branch: if needing to deploy a fix to multiple major node
+versions, you should cherry pick the patch on all branches you want to update.
 
 ### Manual
 
@@ -29,92 +36,46 @@ make
 
 ## Build a new Node.js version
 
+Create a new branch `node-xx` for the new major version.
+
 Update `NODE_VERSION` in `Makefile` to the required SemVer tag
 [Availables tags](https://hub.docker.com/_/node):
 
 ```Makefile
 # Makefile
-NODE_VERSION=[THE-MAJOR-NUMBER]
+NODE_VERSION=[MAJOR.MINOR.PATCH]
 ```
 
-If the new Node.js version is a major one, add configuration in `.circleci/config.yml`:
+update `NODE_VERSION` in all jobs. For example:
 
-```yml
-version: 2
-jobs:
-  test:
-
-  # ...
-
-  build_[THE-MAJOR-NUMBER]:
+```diff
+  build-base:
     docker:
       - image: circleci/buildpack-deps:bionic-scm
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: build and push docker images
+          name: build base image
           command: |
             MAJOR=$(echo ${NODE_VERSION} | cut -d '.' -f1)
             MINOR=$(echo ${NODE_VERSION} | cut -d '.' -f2)
-            docker login -u $DOCKER_BUILD_USER -p $DOCKER_BUILD_PASS
             docker build -t ${DK_IMAGE}:${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target base generic
-            docker build -t ${DK_IMAGE}:ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target ci generic
-            docker build -t ${DK_IMAGE}:wkhtml-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf generic
-            docker build -t ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} --build-arg SRC_TAG=${NODE_VERSION}-alpine --target wkhtmltopdf_ci generic
-            docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:${MAJOR}.${MINOR}
-            docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:${MAJOR}
-            docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-${MAJOR}.${MINOR}
-            docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-${MAJOR}
-            docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-${MAJOR}.${MINOR}
-            docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-${MAJOR}
-            docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-${MAJOR}.${MINOR}
-            docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-${MAJOR}
-            docker push ${DK_IMAGE}:${NODE_VERSION}
-            docker push ${DK_IMAGE}:${MAJOR}.${MINOR}
-            docker push ${DK_IMAGE}:${MAJOR}
-            docker push ${DK_IMAGE}:ci-${NODE_VERSION}
-            docker push ${DK_IMAGE}:ci-${MAJOR}.${MINOR}
-            docker push ${DK_IMAGE}:ci-${MAJOR}
-            docker push ${DK_IMAGE}:wkhtml-${NODE_VERSION}
-            docker push ${DK_IMAGE}:wkhtml-${MAJOR}.${MINOR}
-            docker push ${DK_IMAGE}:wkhtml-${MAJOR}
-            docker push ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION}
-            docker push ${DK_IMAGE}:wkhtml-ci-${MAJOR}.${MINOR}
-            docker push ${DK_IMAGE}:wkhtml-ci-${MAJOR}
-            if [ "$LATEST_VERSION" == "true" ]; then
-              docker tag ${DK_IMAGE}:${NODE_VERSION} ${DK_IMAGE}:latest
-              docker tag ${DK_IMAGE}:ci-${NODE_VERSION} ${DK_IMAGE}:ci-latest
-              docker tag ${DK_IMAGE}:wkhtml-${NODE_VERSION} ${DK_IMAGE}:wkhtml-latest
-              docker tag ${DK_IMAGE}:wkhtml-ci-${NODE_VERSION} ${DK_IMAGE}:wkhtml-ci-latest
-              docker push ${DK_IMAGE}:latest
-              docker push ${DK_IMAGE}:ci-latest
-              docker push ${DK_IMAGE}:wkhtml-latest
-              docker push ${DK_IMAGE}:wkhtml-ci-latest
-            fi
-            docker images
     environment:
       DK_IMAGE: "cubyn/node"
-      NODE_VERSION: "[THE-MAJOR-NUMBER]"
-      LATEST_VERSION: "false"
-
-workflows:
-  version: 2
-
-  # ...
-
-  "node-[THE-MAJOR-NUMBER]":
-    jobs:
-      - test
-      - build_[THE-MAJOR-NUMBER]:
-          context: cubyn_hub_docker
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
+-      NODE_VERSION: "14.18.0"
++      NODE_VERSION: "16.14.2"
 ```
 
 ### Images
 
 See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) for the complete list of available tags.
+
+## Known issue
+
+If you push `NODE_VERSION=16.14.2` and then `NODE_VERSION=16.14.0`, image `cubyn/node:16` and
+`cubyn/node:16.14` will have been overwritten and will point to `NODE_VERSION=16.14.0`, against what
+could be reasonably assumed.
+
+If we don't ever downgrade node version, we don't risk running into any issue; but if we have to fix
+a previously published version, we need to be careful.
