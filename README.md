@@ -2,10 +2,14 @@
 
 [![CircleCI](https://circleci.com/gh/cubyn/docker-node/tree/master.svg?style=svg)](https://circleci.com/gh/cubyn/docker-node/tree/master)
 
-Cubyn Docker container for Node.js and Yarn.
+Build Docker container for Node.js and Yarn.
 Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
 ## Usage
+
+### Automatic (preferred)
+
+When a new configuration is push into `master` branch, the CI push the images to Docker Hub.
 
 ### Manual
 
@@ -23,18 +27,14 @@ make push
 make
 ```
 
-### Automatic
-
-When a new configuration is push into `master` branch, the CI push the images to Docker Hub.
-
-## Build on a new Node.js version
+## Build a new Node.js version
 
 Update `NODE_VERSION` in `Makefile` to the required SemVer tag
 [Availables tags](https://hub.docker.com/_/node):
 
 ```Makefile
 # Makefile
-NODE_VERSION=13.12.0
+NODE_VERSION=[THE-MAJOR-NUMBER]
 ```
 
 If the new Node.js version is a major one, add configuration in `.circleci/config.yml`:
@@ -46,7 +46,7 @@ jobs:
 
   # ...
 
-  build_13:
+  build_[THE-MAJOR-NUMBER]:
     docker:
       - image: circleci/buildpack-deps:bionic-scm
     steps:
@@ -95,7 +95,7 @@ jobs:
             docker images
     environment:
       DK_IMAGE: "cubyn/node"
-      NODE_VERSION: "13.12.0"
+      NODE_VERSION: "[THE-MAJOR-NUMBER]"
       LATEST_VERSION: "false"
 
 workflows:
@@ -115,39 +115,6 @@ workflows:
               only: master
 ```
 
-### Specifics images
+### Images
 
 See [Docker Hub](https://hub.docker.com/r/cubyn/node/tags/) for the complete list of available tags.
-
-## Sample usage
-
-```dockerfile
-## If using compiled native modules (like iconv, bcrypt, etc.):
-#FROM cubyn/node:dynamic-13.12.0
-##
-## else:
-FROM cubyn/node:13.12.0
-
-WORKDIR /app
-ENV PWD /app
-
-COPY package.json package.json
-COPY yarn.lock yarn.lock
-
-## if using private NPM token, it should be passed at build time with --build-args
-#ARG NPM_TOKEN
-#RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-## don't forget to rm ~/.npmrc after module install for security concerns
-## this should be merged into the RUN layer below so the .npmrc is not contained in any layer
-
-## if using compiled native modules (like iconv, bcrypt, etc.)
-#RUN apk add --no-cache python make g++ libexecinfo-dev && \
-#    yarn install --production && \
-#    apk del python make g++ libexecinfo-dev
-## else
-RUN yarn install --production
-
-COPY src src
-
-CMD ["node", "src"]
-```
