@@ -9,11 +9,11 @@ Based on [mhart/alpine-node](https://github.com/mhart/alpine-node).
 
 ### Automatic (preferred)
 
-When a new configuration is push into a branch with pattern `node-xx`, the CI pushes the images to
+When a new configuration is pushed to `master` or to a branch with pattern `node-xx`, the CI pushes the images to
 Docker Hub.
 
 The convention is that `node-14` is configured to publish the latest version of Node 14.x, `node-16`
-is configured to publish the latest version of Node 16.x, etc.
+is configured to publish the latest version of Node 16.x, etc. and `master` is the current lts major version.
 
 Some more changes may be pushed to each branch: if needing to deploy a fix to multiple major node
 versions, you should cherry pick the patch on all branches you want to update.
